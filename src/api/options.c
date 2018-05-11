@@ -87,7 +87,7 @@ nlopt_opt NLOPT_STDCALL nlopt_create(nlopt_algorithm algorithm, unsigned n)
 
         opt->stopval = -HUGE_VAL;
         opt->ftol_rel = opt->ftol_abs = 0;
-        opt->xtol_rel = 0;
+        opt->xtol_rel = NULL;
         opt->xtol_abs = NULL;
         opt->maxeval = 0;
         opt->numevals = 0;
@@ -108,6 +108,9 @@ nlopt_opt NLOPT_STDCALL nlopt_create(nlopt_algorithm algorithm, unsigned n)
                 goto oom;
             opt->ub = (double *) calloc(n, sizeof(double));
             if (!opt->ub)
+                goto oom;
+            opt->xtol_rel = (double *) calloc(n, sizeof(double));
+            if (!opt->xtol_rel)
                 goto oom;
             opt->xtol_abs = (double *) calloc(n, sizeof(double));
             if (!opt->xtol_abs)

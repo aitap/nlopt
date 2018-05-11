@@ -463,7 +463,7 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
             dret = direct_optimize(f_direct, opt, ni, lb, ub, x, minf,
                                    stop.maxeval, -1,
                                    stop.start, stop.maxtime,
-                                   0.0, 0.0, pow(stop.xtol_rel, (double) n), -1.0, stop.force_stop, stop.minf_max, 0.0, NULL, algorithm == NLOPT_GN_ORIG_DIRECT ? DIRECT_ORIGINAL : DIRECT_GABLONSKY);
+                                   0.0, 0.0, pow(stop.xtol_rel[0]/*FIXME*/, (double) n), -1.0, stop.force_stop, stop.minf_max, 0.0, NULL, algorithm == NLOPT_GN_ORIG_DIRECT ? DIRECT_ORIGINAL : DIRECT_GABLONSKY);
             free(opt->work);
             opt->work = NULL;
             switch (dret) {
@@ -612,14 +612,14 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
                     RETURN_ERR(NLOPT_FAILURE, opt, "failed to create local_opt");
                 nlopt_set_ftol_rel(local_opt, opt->ftol_rel);
                 nlopt_set_ftol_abs(local_opt, opt->ftol_abs);
-                nlopt_set_xtol_rel(local_opt, opt->xtol_rel);
+                nlopt_set_xtol_relv(local_opt, opt->xtol_rel);
                 nlopt_set_xtol_abs(local_opt, opt->xtol_abs);
                 nlopt_set_maxeval(local_opt, nlopt_local_search_maxeval);
             }
             if (opt->dx)
                 nlopt_set_initial_step(local_opt, opt->dx);
-            for (i = 0; i < n && stop.xtol_abs[i] > 0; ++i);
-            if (local_opt->ftol_rel <= 0 && local_opt->ftol_abs <= 0 && local_opt->xtol_rel <= 0 && i < n) {
+            for (i = 0; i < n && stop.xtol_abs[i] > 0 && stop.xtol_rel[i] > 0; ++i);
+            if (local_opt->ftol_rel <= 0 && local_opt->ftol_abs <= 0 && i < n) {
                 /* it is not sensible to call MLSL without *some*
                    nonzero tolerance for the local search */
                 nlopt_set_ftol_rel(local_opt, 1e-15);
@@ -744,7 +744,7 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
                     RETURN_ERR(NLOPT_FAILURE, opt, "failed to create local_opt");
                 nlopt_set_ftol_rel(local_opt, opt->ftol_rel);
                 nlopt_set_ftol_abs(local_opt, opt->ftol_abs);
-                nlopt_set_xtol_rel(local_opt, opt->xtol_rel);
+                nlopt_set_xtol_relv(local_opt, opt->xtol_rel);
                 nlopt_set_xtol_abs(local_opt, opt->xtol_abs);
                 nlopt_set_maxeval(local_opt, nlopt_local_search_maxeval);
             }

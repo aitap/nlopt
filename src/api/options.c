@@ -571,7 +571,7 @@ nlopt_result NLOPT_STDCALL nlopt_add_equality_constraint(nlopt_opt opt, nlopt_fu
 
 GETSET(stopval, double, stopval)
 
-GETSET(ftol_rel, double, ftol_rel) GETSET(ftol_abs, double, ftol_abs) GETSET(xtol_rel, double, xtol_rel)
+GETSET(ftol_rel, double, ftol_rel) GETSET(ftol_abs, double, ftol_abs)
  nlopt_result NLOPT_STDCALL nlopt_set_xtol_abs(nlopt_opt opt, const double *xtol_abs)
 {
     if (opt) {
@@ -598,6 +598,47 @@ nlopt_result NLOPT_STDCALL nlopt_get_xtol_abs(const nlopt_opt opt, double *xtol_
 {
     memcpy(xtol_abs, opt->xtol_abs, opt->n * sizeof(double));
     return NLOPT_SUCCESS;
+}
+
+nlopt_result
+NLOPT_STDCALL nlopt_set_xtol_relv(nlopt_opt opt, const double *xtol_rel)
+{
+     if (opt) {
+          nlopt_unset_errmsg(opt);
+	  memcpy(opt->xtol_rel, xtol_rel, opt->n * sizeof(double));
+	  return NLOPT_SUCCESS;
+     }
+     return NLOPT_INVALID_ARGS;
+}
+
+nlopt_result
+NLOPT_STDCALL nlopt_set_xtol_rel(nlopt_opt opt, double xtol_rel)
+{
+     if (opt) {
+	  unsigned i;
+          nlopt_unset_errmsg(opt);
+	  for (i = 0; i < opt->n; ++i)
+	       opt->xtol_rel[i] = xtol_rel;
+	  return NLOPT_SUCCESS;
+     }
+     return NLOPT_INVALID_ARGS;
+}
+
+nlopt_result
+NLOPT_STDCALL nlopt_get_xtol_relv(const nlopt_opt opt, double *xtol_rel)
+{
+     memcpy(xtol_rel, opt->xtol_rel, opt->n * sizeof(double));
+     return NLOPT_SUCCESS;
+}
+
+// FIXME: this may not make sense
+double
+NLOPT_STDCALL nlopt_get_xtol_rel(const nlopt_opt opt)
+{
+     double ret = HUGE_VAL;
+	 for (unsigned i = 0; i < opt->n; i++)
+	  if (opt->xtol_rel[i] < ret) ret = opt->xtol_rel[i];
+     return ret;
 }
 
 GETSET(maxeval, int, maxeval)

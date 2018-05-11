@@ -77,8 +77,7 @@ extern "C" {
         double minf_max;
         double ftol_rel;
         double ftol_abs;
-        double xtol_rel;
-        const double *xtol_abs;
+        const double *xtol_rel, *xtol_abs;
         int *nevals_p, maxeval;
         double maxtime, start;
         int *force_stop;

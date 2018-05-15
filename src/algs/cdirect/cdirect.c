@@ -384,7 +384,7 @@ static int small(double *w, params *p)
      int i;
      for (i = 0; i < p->n; ++i)
 	  if (w[i] > p->stop->xtol_abs[i] &&
-	      w[i] > (p->ub[i] - p->lb[i]) * p->stop->xtol_rel)
+	      w[i] > (p->ub[i] - p->lb[i]) * p->stop->xtol_rel[i])
 	       return 0;
      return 1;
 }

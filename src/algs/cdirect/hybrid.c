@@ -88,15 +88,22 @@ static nlopt_result optimize_rect(double *r, params *p)
 	  lb[i] = c[i] - 0.5 * w[i];
 	  ub[i] = c[i] + 0.5 * w[i];
      }
+	 {
+	 // FIXME: passing the smallest relative tolerance instead of the whole vector
+	 double xtol = stop->xtol_rel[0];
+	 for (unsigned i = 1; i < n; i++)
+	  if (stop->xtol_rel[i] < xtol)
+	   xtol = stop->xtol_rel[i];
      ret = nlopt_minimize(p->local_alg, n, fcount, p, 
 			  lb, ub, x, &minf,
 			  stop->minf_max, stop->ftol_rel, stop->ftol_abs,
-			  stop->xtol_rel, stop->xtol_abs,
+			  xtol, stop->xtol_abs,
 			  p->local_maxeval > 0 ?
 			  MIN(p->local_maxeval, 
 			      stop->maxeval - *(stop->nevals_p))
 			  : stop->maxeval - *(stop->nevals_p),
 			  stop->maxtime - (t - stop->start));
+	 }
      r[1] = -minf;
      if (ret > 0) {
 	  if (minf < p->minf) {
@@ -148,7 +155,7 @@ static nlopt_result divide_largest(params *p)
 
      /* check xtol */
      for (i = 0; i < n; ++i)
-	  if (w[i] > p->stop->xtol_rel * (ub[i] - lb[i])
+	  if (w[i] > p->stop->xtol_rel[i] * (ub[i] - lb[i])
 	      && w[i] > p->stop->xtol_abs[i])
 	       break;
      if (i == n) return NLOPT_XTOL_REACHED;

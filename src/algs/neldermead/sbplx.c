@@ -198,7 +198,7 @@ nlopt_result sbplx_minimize(int n, nlopt_func f, void *f_data,
 		  the inner Nelder-Mead may not make much progress */
 	       for (j = 0; j < n; ++j)
 		    if (fabs(xstep[j]) * psi > stop->xtol_abs[j]
-			&& fabs(xstep[j]) * psi > stop->xtol_rel * fabs(x[j]))
+			&& fabs(xstep[j]) * psi > stop->xtol_rel[j] * fabs(x[j]))
 			 break;
 	       if (j == n) {
 		    ret = NLOPT_XTOL_REACHED;

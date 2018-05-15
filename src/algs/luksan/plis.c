@@ -106,7 +106,7 @@
 static void plis_(int *nf, int *nb, double *x, int *
 		  ix, double *xl, double *xu, double *gf, double *s, 
 		  double *xo, double *go, double *uo, double *vo, 
-		  double *xmax, double *tolx, double *tolf, double *
+		  double *xmax, double *tolf, double *
 		  tolb, double *tolg, nlopt_stopping *stop,
 		  double *minf_est, double *gmax, 
 		  double *f, int *mit, int *mfv, int *iest, int *mf,
@@ -205,9 +205,6 @@ static void plis_(int *nf, int *nb, double *x, int *
     }
     if (*xmax <= 0.) {
 	*xmax = 1e16;
-    }
-    if (*tolx <= 0.) {
-	*tolx = 1e-16;
     }
     if (*tolf <= 0.) {
 	*tolf = 1e-14;
@@ -482,7 +479,6 @@ nlopt_result luksan_plis(int n, nlopt_func f, void *f_data,
 	   &xmax,
 
 	   /* fixme: pass tol_rel and tol_abs and use NLopt check */
-	   &stop->xtol_rel,
 	   &stop->ftol_rel,
 	   &stop->minf_max,
 	   &tolg,

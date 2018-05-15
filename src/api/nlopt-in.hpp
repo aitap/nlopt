@@ -461,6 +461,7 @@ namespace nlopt {
     NLOPT_GETSET(double, ftol_rel)
     NLOPT_GETSET(double, ftol_abs)
     NLOPT_GETSET(double, xtol_rel)
+	// TODO: GETSET_VEC once we work out function names
     NLOPT_GETSET_VEC(xtol_abs)
     NLOPT_GETSET(int, maxeval)
 

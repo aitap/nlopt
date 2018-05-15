@@ -634,12 +634,13 @@ NLOPT_STDCALL nlopt_get_xtol_relv(const nlopt_opt opt, double *xtol_rel)
      return NLOPT_SUCCESS;
 }
 
-// FIXME: this may not make sense
+/* FIXME: this may not make sense */
 double
 NLOPT_STDCALL nlopt_get_xtol_rel(const nlopt_opt opt)
 {
-     double ret = HUGE_VAL;
-	 for (unsigned i = 0; i < opt->n; i++)
+	 unsigned i;
+     double ret = opt->xtol_rel[0];
+	 for (i = 1; i < opt->n; i++)
 	  if (opt->xtol_rel[i] < ret) ret = opt->xtol_rel[i];
      return ret;
 }

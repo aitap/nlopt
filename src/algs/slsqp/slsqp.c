@@ -2557,7 +2557,7 @@ nlopt_result nlopt_slsqp(unsigned n, nlopt_func f, void *f_data,
 		     as in the SLSQP code (except xtol as well as ftol) */
 		  ret = NLOPT_ROUNDOFF_LIMITED; /* usually why deriv>0 */
 		  if (feasible_cur) {
-			  // FIXME: using vector xtol_rel would require dropping const or allocating memory here
+			  /* FIXME: using vector xtol_rel would require dropping const or allocating memory here */
 		      double save_ftol_rel = stop->ftol_rel;
 		      double save_ftol_abs = stop->ftol_abs;
 		      stop->ftol_rel *= 10;

@@ -239,7 +239,7 @@ NLOPT_EXTERN(double) nlopt_get_ftol_abs(const nlopt_opt opt);
 NLOPT_EXTERN(nlopt_result) nlopt_set_xtol_rel(nlopt_opt opt, double tol);
 NLOPT_EXTERN(nlopt_result) nlopt_set_xtol_relv(nlopt_opt opt,
 					     const double *tol);
-NLOPT_EXTERN(double) nlopt_get_xtol_rel(const nlopt_opt opt); // FIXME: this may not make sense
+NLOPT_EXTERN(double) nlopt_get_xtol_rel(const nlopt_opt opt); /* FIXME: this may not make sense */
 NLOPT_EXTERN(nlopt_result) nlopt_get_xtol_relv(const nlopt_opt opt,
 					     double *tol);
 NLOPT_EXTERN(nlopt_result) nlopt_set_xtol_abs1(nlopt_opt opt, double tol);

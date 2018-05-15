@@ -89,9 +89,9 @@ static nlopt_result optimize_rect(double *r, params *p)
 	  ub[i] = c[i] + 0.5 * w[i];
      }
 	 {
-	 // FIXME: passing the smallest relative tolerance instead of the whole vector
+	 /* FIXME: passing the smallest relative tolerance instead of the whole vector */
 	 double xtol = stop->xtol_rel[0];
-	 for (unsigned i = 1; i < n; i++)
+	 for (i = 1; i < n; i++)
 	  if (stop->xtol_rel[i] < xtol)
 	   xtol = stop->xtol_rel[i];
      ret = nlopt_minimize(p->local_alg, n, fcount, p, 

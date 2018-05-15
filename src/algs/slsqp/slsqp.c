@@ -2557,19 +2557,17 @@ nlopt_result nlopt_slsqp(unsigned n, nlopt_func f, void *f_data,
 		     as in the SLSQP code (except xtol as well as ftol) */
 		  ret = NLOPT_ROUNDOFF_LIMITED; /* usually why deriv>0 */
 		  if (feasible_cur) {
+			  // FIXME: using vector xtol_rel would require dropping const or allocating memory here
 		      double save_ftol_rel = stop->ftol_rel;
-		      double save_xtol_rel = stop->xtol_rel;
 		      double save_ftol_abs = stop->ftol_abs;
 		      stop->ftol_rel *= 10;
 		      stop->ftol_abs *= 10;
-		      stop->xtol_rel *= 10;
 		      if (nlopt_stop_ftol(stop, fcur, state.f0))
 			  ret = NLOPT_FTOL_REACHED;
 		      else if (nlopt_stop_x(stop, xcur, state.x0))
 			  ret = NLOPT_XTOL_REACHED;
 		      stop->ftol_rel = save_ftol_rel;
 		      stop->ftol_abs = save_ftol_abs;
-		      stop->xtol_rel = save_xtol_rel;
 		  }
 		  goto done;
 	      case 5: /* singular matrix E in LSQ subproblem */

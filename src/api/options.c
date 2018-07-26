@@ -137,7 +137,7 @@ nlopt_opt NLOPT_STDCALL nlopt_copy(const nlopt_opt opt)
         nlopt_munge munge;
         nopt = (nlopt_opt) malloc(sizeof(struct nlopt_opt_s));
         *nopt = *opt;
-        nopt->lb = nopt->ub = nopt->xtol_abs = NULL;
+        nopt->lb = nopt->ub = nopt->xtol_abs = nopt->xtol_rel = NULL;
         nopt->fc = nopt->h = NULL;
         nopt->m_alloc = nopt->p_alloc = 0;
         nopt->local_opt = NULL;
@@ -160,6 +160,9 @@ nlopt_opt NLOPT_STDCALL nlopt_copy(const nlopt_opt opt)
                 goto oom;
             nopt->xtol_abs = (double *) malloc(sizeof(double) * (opt->n));
             if (!opt->xtol_abs)
+                goto oom;
+            nopt->xtol_rel = (double *) malloc(sizeof(double) * (opt->n));
+            if (!opt->xtol_rel)
                 goto oom;
 
             memcpy(nopt->lb, opt->lb, sizeof(double) * (opt->n));

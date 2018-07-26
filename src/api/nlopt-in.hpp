@@ -460,8 +460,28 @@ namespace nlopt {
     NLOPT_GETSET(double, stopval)
     NLOPT_GETSET(double, ftol_rel)
     NLOPT_GETSET(double, ftol_abs)
-    NLOPT_GETSET(double, xtol_rel)
-	// TODO: GETSET_VEC once we work out function names
+
+    // TODO: use GETSET_VEC once we work out function names
+    void set_xtol_rel(double val) {
+      mythrow(nlopt_set_xtol_rel(o, val));
+    }
+    // cannot overload this with std::vector<double> get_xtol_rel()
+    // preserve old behaviour
+    double get_xtol_rel() const {
+      if (!o) throw std::runtime_error("uninitialized nlopt::opt");
+      return nlopt_get_xtol_rel(o);
+    }
+    void get_xtol_rel(std::vector<double> &v) const {
+      if (o && nlopt_get_dimension(o) != v.size())
+        throw std::invalid_argument("dimension mismatch");
+      mythrow(nlopt_get_xtol_relv(o, v.empty() ? NULL : &v[0]));
+    }
+    void set_xtol_rel(const std::vector<double> &v) {
+      if (o && nlopt_get_dimension(o) != v.size())
+        throw std::invalid_argument("dimension mismatch");
+      mythrow(nlopt_set_xtol_relv(o, v.empty() ? NULL : &v[0]));
+    }
+
     NLOPT_GETSET_VEC(xtol_abs)
     NLOPT_GETSET(int, maxeval)
 

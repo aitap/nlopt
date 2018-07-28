@@ -80,6 +80,7 @@ endif()
 
 include (CheckIncludeFiles)
 include (CheckFunctionExists)
+include (CheckSymbolExists)
 include (CheckTypeSize)
 include (CheckCCompilerFlag)
 include (CheckCXXSymbolExists)
@@ -123,18 +124,7 @@ if (HAVE_LIBM)
   set (M_LIBRARY m)
 endif()
 
-if (NOT DEFINED HAVE_FPCLASSIFY)
-  message(STATUS "Looking for fpclassify")
-  file (WRITE ${PROJECT_BINARY_DIR}/fpclassify.c "#include <math.h>\n")
-  file (APPEND ${PROJECT_BINARY_DIR}/fpclassify.c "int main(void) {\n")
-  file (APPEND ${PROJECT_BINARY_DIR}/fpclassify.c "if (!fpclassify(3.14159)) fpclassify(2.7183);\n")
-  file (APPEND ${PROJECT_BINARY_DIR}/fpclassify.c "  return 0; }\n")
-  try_compile (HAVE_FPCLASSIFY
-  ${PROJECT_BINARY_DIR}/build_fpclassify
-  ${PROJECT_BINARY_DIR}/fpclassify.c
-  CMAKE_FLAGS -DLINK_LIBRARIES=m)
-  message(STATUS "Looking for fpclassify - ${HAVE_FPCLASSIFY}")
-endif ()
+check_symbol_exists(fpclassify "math.h" HAVE_FPCLASSIFY)
 
 option (WITH_THREADLOCAL "check thread local keyword" ON)
 if (WITH_THREADLOCAL AND NOT DEFINED HAVE_THREAD_LOCAL_STORAGE)

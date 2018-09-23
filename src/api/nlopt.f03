@@ -65,33 +65,49 @@ module nlopt
  end enum
 
  abstract interface
-!typedef double (*nlopt_func) (unsigned n, const double *x,
-!                              double *gradient, /* NULL if not needed */
-!                              void *func_data);
-!
-!typedef void (*nlopt_mfunc) (unsigned m, double *result, unsigned n, const double *x,
-!                             double *gradient, /* NULL if not needed */
-!                             void *func_data);
-!
-!/* A preconditioner, which preconditions v at x to return vpre.
-!   (The meaning of "preconditioning" is algorithm-dependent.) */
-!typedef void (*nlopt_precond) (unsigned n, const double *x, const double *v, double *vpre, void *data);
+ !typedef double (*nlopt_func) (unsigned n, const double *x,
+ !                              double *gradient, /* NULL if not needed */
+ !                              void *func_data);
+ function nlopt_func(n, x, gradient, func_data) result(ret) bind(c)
+  import c_double, c_ptr, c_int
+  real(c_double) :: ret, x(*), gradient(*)
+  integer(c_int), value :: n
+  type(c_ptr) :: func_data
+ end function
+
+ !typedef void (*nlopt_mfunc) (unsigned m, double *result, unsigned n, const double *x,
+ !                             double *gradient, /* NULL if not needed */
+ !                             void *func_data);
+ subroutine nlopt_mfunc(m, result, n, x, gradient, func_data) bind(c)
+  import c_double, c_int, c_ptr
+  real(c_double) :: result(*), x(*), gradient(*)
+  integer(c_int), value :: m, n
+  type(c_ptr) :: func_data
+ end subroutine
+
+ !typedef void (*nlopt_precond) (unsigned n, const double *x, const double *v, double *vpre, void *data);
+ subroutine nlopt_precond(n, x, v, vpre, data) bind(c)
+  import c_double, c_int, c_ptr
+  real(c_double) :: x(*), v(*), vpre(*)
+  integer(c_int), value :: n
+  type(c_ptr) :: data
+ end subroutine
  end interface
 
-! FIXME: is this the best way to describe a typed opaque pointer? is it guaranteed to be compatible?
+ !struct nlopt_opt_s;             /* opaque structure, defined internally */
+ !typedef struct nlopt_opt_s *nlopt_opt;
  type, bind(c) :: nlopt_opt
   private
   type(c_ptr) :: ptr
  end type
-!struct nlopt_opt_s;             /* opaque structure, defined internally */
-!typedef struct nlopt_opt_s *nlopt_opt;
+ ! FIXME: is this the best way to describe a typed opaque pointer? is it guaranteed to be compatible?
 
  interface
 
  !NLOPT_EXTERN(const char *) nlopt_algorithm_name(nlopt_algorithm a);
  function nlopt_algorithm_name(a) result(name) bind(c)
   import c_ptr
-  integer(kind(NLOPT_NUM_ALGORITHMS)), value :: a
+  integer(kind(NLOPT_NUM_ALGORITHMS)), value :: a ! FIXME: may not be C interoperable?
   type(c_ptr) :: name
   ! maybe it makes sense to write a wrapper that would make a character,pointer,dimension(:) :: string by calling call c_f_pointer(ptr, string)
  end function
@@ -119,13 +135,23 @@ module nlopt
 !   (including algorithm-specific ones) without breaking backwards
 !   compatibility, having functions with zillions of parameters, or
 !   relying non-reentrantly on global variables.*/
-!
-!
+
 !/* the only immutable parameters of an optimization are the algorithm and
 !   the dimension n of the problem, since changing either of these could
 !   have side-effects on lots of other parameters */
-!NLOPT_EXTERN(nlopt_opt) nlopt_create(nlopt_algorithm algorithm, unsigned n);
-!NLOPT_EXTERN(void) nlopt_destroy(nlopt_opt opt);
+ !NLOPT_EXTERN(nlopt_opt) nlopt_create(nlopt_algorithm algorithm, unsigned n);
+ function nlopt_create(algo, n) bind(c) result(ret)
+  import nlopt_opt, c_int
+  type(nlopt_opt) :: ret
+  integer(kind(NLOPT_NUM_ALGORITHMS)), value :: algo
+  integer(c_int), value :: n
+ end function
+
+ !NLOPT_EXTERN(void) nlopt_destroy(nlopt_opt opt);
+ subroutine nlopt_destroy(opt) bind(c)
+  import nlopt_opt
+  type(nlopt_opt), value :: opt
+ end subroutine
 !NLOPT_EXTERN(nlopt_opt) nlopt_copy(const nlopt_opt opt);
 !
 !NLOPT_EXTERN(nlopt_result) nlopt_optimize(nlopt_opt opt, double *x, double *opt_f);
